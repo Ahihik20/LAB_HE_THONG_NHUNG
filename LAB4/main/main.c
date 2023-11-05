@@ -6,57 +6,80 @@
 #include "freertos/task.h"
 #include "freertos/queue.h"
 
-QueueHandle_t school;
+#define REQUEST_QUEUE_LENGTH 10
 
-typedef struct
-{
-    int ID;
-    int score;
-    int error;
-}Student;
+typedef struct {
+    int requestType;
+} Request;
 
-void reception(void* pvParameter){
-    Student data_send;
-    int id = 0;
+int flag = 0;
+
+QueueHandle_t requestQueue;
+
+void receptionTask(Request newRequest) {
+    if (xQueueSend(requestQueue, &newRequest, pdMS_TO_TICKS(100)) != pdPASS) {
+            printf("Request queue is full, request dropped!\n");
+    }
+}
+
+void createRequest(void *pvParameter){
     while (1)
     {
-        data_send.ID = id;
-        id ++;
-        data_send.score = rand() % 15;
-        xQueueSend(school,&data_send, portMAX_DELAY);
-        printf("Add Student: %d and Score: %d into queue\n",data_send.ID, data_send.score);
+        Request newRequest;
+        newRequest.requestType = rand() % 5;
+        receptionTask(newRequest);
+         vTaskDelay(pdMS_TO_TICKS(1000));
+    }
+    vTaskDelete(NULL);
+}
+
+void functionalTask1(Request Param) {
+    if(Param.requestType == 0) {
+        printf("functionalTask1\n");
+        flag = 1;
+    }
+}
+
+void functionalTask2(Request Param) {
+    if(Param.requestType == 1) {
+        printf("functionalTask2\n");
+        flag = 1;
+    }
+}
+
+void functionalTask3(Request Param) {
+    if(Param.requestType == 2) {
+        printf("functionalTask3\n");
+        flag = 1;
+    }
+}
+
+void functionalIgnoreTask(Request Param){
+    printf("Ignore Task\n");
+    printf("%d\n",Param.requestType);
+}
+
+void handleTask(void *pvParameter){
+    Request receivedRequest;
+    while (1) {
+        if (xQueueReceive(requestQueue, &receivedRequest, portMAX_DELAY) == pdTRUE) {
+            //printf("%d\n",uxQueueMessagesWaiting(requestQueue));
+            functionalTask1(receivedRequest);
+            functionalTask2(receivedRequest);
+            functionalTask3(receivedRequest);
+            if(flag == 0) functionalIgnoreTask(receivedRequest);
+            flag = 0;
+        }
+        //if(uxQueueMessagesWaiting(requestQueue) == REQUEST_QUEUE_LENGTH) vTaskDelay(pdMS_TO_TICKS(500));
         vTaskDelay(pdMS_TO_TICKS(1000));
     }
-    
+    vTaskDelete(NULL);
 }
 
-void function1(void* pvParameter){
-    Student data_receive;
-    while (1)
-    {
-        if(xQueueReceive(school,&data_receive,portMAX_DELAY)){
-            if(data_receive.score>=8 && data_receive.score<=10){
-                printf("Student %d: A\n",data_receive.ID);
-            }
-            else if(data_receive.score>=5 && data_receive.score<8){
-                printf("Student %d: B\n",data_receive.ID);
-            }
-            else if(data_receive.score>=0 && data_receive.score<5){
-                printf("Student %d: C\n",data_receive.ID);
-            }
-            else{
-                printf("Ignore Student: %d\n", data_receive.ID);
-            }
-        }
-        else{
-            printf("Ignore Student: %d\n", data_receive.ID);
-        }
-    }  
+void app_main() {
+    requestQueue = xQueueCreate(REQUEST_QUEUE_LENGTH, sizeof(Request));
+
+    xTaskCreate(createRequest, "Create Request", 2048, NULL, 2, NULL);
+    xTaskCreate(handleTask, "Handle Task", 2048, NULL, 1, NULL);  
 }
 
-void app_main()
-{
-    school = xQueueCreate(10, sizeof(Student));
-    xTaskCreate(&reception, "reception",2048,NULL,2,NULL);
-    xTaskCreate(&function1, "function1",2048,NULL,1,NULL);
-}
