@@ -1,7 +1,7 @@
 {
     "version":            "1",
     "project_name":       "main",
-    "project_version":    "34655fa",
+    "project_version":    "526b862-dirty",
     "project_path":       "E:/HK231/HE_THONG_NHUNG/LAB/LAB3/SCHEDULING3",
     "idf_path":           "E:/HK231/HE_THONG_NHUNG/esp-idf",
     "build_dir":          "E:/HK231/HE_THONG_NHUNG/LAB/LAB3/SCHEDULING3/build",

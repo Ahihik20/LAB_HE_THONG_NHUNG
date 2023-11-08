@@ -56,7 +56,6 @@ void functionalTask3(Request Param) {
 
 void functionalIgnoreTask(Request Param){
     printf("Ignore Task\n");
-    printf("%d\n",Param.requestType);
 }
 
 void handleTask(void *pvParameter){
