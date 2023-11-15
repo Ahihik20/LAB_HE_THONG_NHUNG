@@ -9,7 +9,8 @@
                 "${config:idf.espAdfPath}/components/**",
                 "${config:idf.espAdfPathWin}/components/**",
                 "${workspaceFolder}/**",
-                "E:/HK231/HE_THONG_NHUNG/esp-idf/components/freertos/FreeRTOS-Kernel-SMP/include"
+                "E:/HK231/HE_THONG_NHUNG/esp-idf/components/freertos/FreeRTOS-Kernel-SMP/include",
+                "E:/HK231/HE_THONG_NHUNG/esp-idf/components/freertos/esp_additions/include"
             ],
             "browse": {
                 "path": [

@@ -6,117 +6,83 @@
 // #include "freertos/task.h"
 // #include "driver/gpio.h"
 
-// volatile uint32_t idleTimeCore0 = 0;
-// volatile uint32_t idleTimeCore1 = 0;
+// #define configUSE_PREEMPTION 1
+// volatile uint32_t ulIdleCycleCount = 0UL;
+// volatile uint32_t ulIdleTask1Count = 0UL;
+// volatile uint32_t ulIdleTask2Count = 0UL;
 
-// // Custom idle task hook
+// char s[1024] = {0};
+
+// void vApplicationTickHook(void){
+
+// }
+
 // void vApplicationIdleHook(void) {
-//     // Determine the current core
-//     UBaseType_t core = xPortGetCoreID();
-
-//     // Increment the idle time for the respective core
-//     if (core == 0) {
-//         idleTimeCore0++;
-//     } else {
-//         idleTimeCore1++;
+//     ulIdleCycleCount ++;
+//     if(ulIdleCycleCount % 10 == 0){
+//         vTaskGetRunTimeStats(s);
+//         printf("%s\n",s);
 //     }
 // }
 
 // void task1(void *pvParameter){
 //     while (1)
 //     {
-//         printf("task1\n");
+//         printf("%ld\n",ulIdleCycleCount);
+//         printf("task1: %ld\n", ulIdleTask1Count);
+//         ulIdleTask1Count ++;
 //         vTaskDelay(pdMS_TO_TICKS(5000));
 //     }
-//     vTaskDelete(NULL);
+    
 // }
 
 // void task2(void *pvParameter){
 //     while (1)
 //     {
-//         printf("task2\n");
-//         vTaskDelay(pdMS_TO_TICKS(1000)); 
-//     }
-//     vTaskDelete(NULL);
-// }
-
-// void calculate(void *pvParameter){
-//     // float cpuUtilizationCore0 = 100.0 - (idleTimeCore0 * 100.0 / configTICK_RATE_HZ);
-//     // float cpuUtilizationCore1 = 100.0 - (idleTimeCore1 * 100.0 / configTICK_RATE_HZ);
-
-//     // printf("CPU Utilization (Core 0): %.2f%%\n", cpuUtilizationCore0);
-//     // printf("CPU Utilization (Core 1): %.2f%%\n", cpuUtilizationCore1);
-//     while (1)
-//     {
-//         printf("%ld\n",idleTimeCore0);
-//         printf("%ld\n",idleTimeCore1);
-
+//         printf("%ld\n",ulIdleCycleCount);
+//         printf("task2: %ld\n", ulIdleTask2Count);
+//         ulIdleTask2Count ++;
 //         vTaskDelay(pdMS_TO_TICKS(1000));
-//     } 
+//     }
+    
 // }
 
 // void app_main(void)
 // {
 //     printf("configUSE_PREEMPTION = %d\n",configUSE_PREEMPTION);
 //     printf("configUSE_TIME_SLICING = %d\n",configUSE_TIME_SLICING);
-//     xTaskCreatePinnedToCore(&task1, "task1", 2048*3, NULL, 1, NULL,1);
-//     xTaskCreatePinnedToCore(&task2,"task2",2048*3,NULL,0,NULL,1);
-//     xTaskCreatePinnedToCore(&calculate,"calculate",2048*3,NULL,1,NULL,0);
+//     xTaskCreatePinnedToCore(&task1, "task1", 2048, NULL, 2, NULL,1);
+//     xTaskCreatePinnedToCore(&task2, "task2", 2048, NULL, 0, NULL,0);
 // }
 
 #include <stdio.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
-// Variables to store idle time for each core
-uint64_t idleTimeCore0 = 0;
-uint64_t idleTimeCore1 = 0;
+// Variable to store idle time
+uint64_t idleTime = 0;
 
-// Custom idle task hook for core 0
-void vApplicationIdleHookCore0(void) {
-    // Increment idle time for core 0
-    idleTimeCore0++;
+// Custom idle task hook
+void vApplicationIdleHook(void) {
+    // Increment idle time
+    idleTime++;
 }
 
-// Custom idle task hook for core 1
-void vApplicationIdleHookCore1(void) {
-    // Increment idle time for core 1
-    idleTimeCore1++;
+void cal(void *pvParameter){
+    while (1) {
+        // Calculate CPU utilization
+        float cpuUtilization = 100.0 - (idleTime * 100.0 / configTICK_RATE_HZ);
+
+        printf("CPU Utilization: %.2f%%\n", cpuUtilization);
+
+        // Delay to control the printing rate
+        vTaskDelay(pdMS_TO_TICKS(1000));
+    }
 }
 
 void app_main() {
-    // Start the FreeRTOS scheduler for core 0
-    xTaskCreatePinnedToCore(
-        vTaskStartScheduler,  // Scheduler task
-        "vTaskStartScheduler",  // Task name
-        4096,  // Stack size
-        NULL,
-        1,  // Priority
-        NULL,
-        0  // Core 0
-    );
-
-    // Start the FreeRTOS scheduler for core 1
-    xTaskCreatePinnedToCore(
-        vTaskStartScheduler,
-        "vTaskStartScheduler",
-        4096,
-        NULL,
-        1,
-        NULL,
-        1  // Core 1
-    );
-
-    while (1) {
-        // Calculate CPU utilization for each core
-        float cpuUtilizationCore0 = 100.0 - (idleTimeCore0 * 100.0 / configTICK_RATE_HZ);
-        float cpuUtilizationCore1 = 100.0 - (idleTimeCore1 * 100.0 / configTICK_RATE_HZ);
-
-        printf("CPU Utilization (Core 0): %.2f%%\n", cpuUtilizationCore0);
-        printf("CPU Utilization (Core 1): %.2f%%\n", cpuUtilizationCore1);
-
-        vTaskDelay(pdMS_TO_TICKS(1000));  // Print the utilization every second
-    }
+    // Start the FreeRTOS scheduler
+    xTaskCreate(&cal, "cal", 2048, NULL, 1, NULL);
 }
 
 
