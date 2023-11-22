@@ -21,22 +21,21 @@
 #include "mqtt_client.h"
 #include "DHT.h"
 
-#define WIFI_SSID "MANGDAYKTX-H1-404" 
-#define WIFI_PASS "244466666" 
-#define BROKER_URL "mqtt://ahihi:aio_uSnL12fFZV7nRYr2foemGuGgNdJj@io.adafruit.com" 
-#define TEMPERATURE "ahihi/feeds/temperature" 
-#define HUMIDITY "ahihi/feeds/humidity"
-#define DHT_GPIO_PIN 17
+#define WIFI_SSID "MANGDAYKTX-H1-404" // access point name
+#define WIFI_PASS "244466666" // access point password
+#define BROKER_URL "mqtt://ahihi:aio_uSnL12fFZV7nRYr2foemGuGgNdJj@io.adafruit.com" // url of Adafruit server
+#define TEMPERATURE "ahihi/feeds/temperature" // temperature is sent to this FEED
+#define HUMIDITY "ahihi/feeds/humidity" // humidity is sent to this FEED
+#define DHT_GPIO_PIN 17 // GPIO where connected DHT11
 
 static const char *TAG = "MQTT_EXAMPLE";
 
 esp_mqtt_client_handle_t mqtt_client;
 
+//handling events about mqtt protocol
 static esp_err_t mqtt_event_handler(esp_mqtt_event_handle_t event)
 {
-    //esp_mqtt_client_handle_t client = event->client;
     int msg_id = 0;
-    // your_context_t *context = event->context;
     switch (event->event_id) {
         case MQTT_EVENT_CONNECTED:
             ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
@@ -71,6 +70,7 @@ static esp_err_t mqtt_event_handler(esp_mqtt_event_handle_t event)
     return ESP_OK;
 }
 
+//handling events about wifi connection
 static void wifi_event_handler(void *event_handler_arg, esp_event_base_t event_base, int32_t event_id, void *event_data)
 {
     switch (event_id)
@@ -91,7 +91,7 @@ static void wifi_event_handler(void *event_handler_arg, esp_event_base_t event_b
         break;
     }
 }
-
+// connecting wifi
 void wifi_connection()
 {
     nvs_flash_init();
@@ -112,6 +112,7 @@ void wifi_connection()
     esp_wifi_connect();
 }
 
+// connect ESP32 to Adafruit server via mqtt protocol
 static void mqtt_app_start(void)
 {
     esp_mqtt_client_config_t mqtt_cfg = {
@@ -123,7 +124,7 @@ static void mqtt_app_start(void)
     esp_mqtt_client_register_event(mqtt_client, ESP_EVENT_ANY_ID, mqtt_event_handler, mqtt_client);
     esp_mqtt_client_start(mqtt_client);
 }
-
+//send data from DHT to Adafruit every 10 seconds
 void mainTask(void *pvParameters)
 {
     double temperature;
