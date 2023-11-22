@@ -332,7 +332,7 @@ esp-idf_BINARY_DIR:STATIC=E:/HK231/HE_THONG_NHUNG/LAB/LAB4/build/esp-idf
 esp-idf_IS_TOP_LEVEL:STATIC=OFF
 
 //Value Computed by CMake
-esp-idf_SOURCE_DIR:STATIC=E:/HK231/HE_THONG_NHUNG/esp-idf
+esp-idf_SOURCE_DIR:STATIC=E:/HK231/Espressif/esp-idf
 
 //Value Computed by CMake
 main_BINARY_DIR:STATIC=E:/HK231/HE_THONG_NHUNG/LAB/LAB4/build
@@ -350,7 +350,7 @@ mbed TLS_BINARY_DIR:STATIC=E:/HK231/HE_THONG_NHUNG/LAB/LAB4/build/esp-idf/mbedtl
 mbed TLS_IS_TOP_LEVEL:STATIC=OFF
 
 //Value Computed by CMake
-mbed TLS_SOURCE_DIR:STATIC=E:/HK231/HE_THONG_NHUNG/esp-idf/components/mbedtls/mbedtls
+mbed TLS_SOURCE_DIR:STATIC=E:/HK231/Espressif/esp-idf/components/mbedtls/mbedtls
 
 //Dependencies for the target
 mbedcrypto_LIB_DEPENDS:STATIC=general;__idf_cxx;general;__idf_newlib;general;__idf_freertos;general;__idf_esp_hw_support;general;__idf_heap;general;__idf_log;general;__idf_soc;general;__idf_hal;general;__idf_esp_rom;general;__idf_esp_common;general;__idf_esp_system;general;__idf_xtensa;

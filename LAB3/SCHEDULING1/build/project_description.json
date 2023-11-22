@@ -1,7 +1,7 @@
 {
     "version":            "1",
     "project_name":       "main",
-    "project_version":    "1ea804f-dirty",
+    "project_version":    "80567e8-dirty",
     "project_path":       "E:/HK231/HE_THONG_NHUNG/LAB/LAB3/SCHEDULING1",
     "idf_path":           "E:/HK231/HE_THONG_NHUNG/esp-idf",
     "build_dir":          "E:/HK231/HE_THONG_NHUNG/LAB/LAB3/SCHEDULING1/build",
@@ -10,7 +10,7 @@
     "bootloader_elf":     "E:/HK231/HE_THONG_NHUNG/LAB/LAB3/SCHEDULING1/build/bootloader/bootloader.elf",
     "app_elf":            "main.elf",
     "app_bin":            "main.bin",
-    "git_revision":       "v5.0.4-dirty",
+    "git_revision":       "v5.0.4",
     "target":             "esp32",
     "rev":                "0",
     "min_rev":            "0",

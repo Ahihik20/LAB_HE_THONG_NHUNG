@@ -4,7 +4,7 @@
 cmake_minimum_required(VERSION 3.5)
 
 file(MAKE_DIRECTORY
-  "E:/HK231/HE_THONG_NHUNG/esp-idf/components/bootloader/subproject"
+  "E:/HK231/Espressif/esp-idf/components/bootloader/subproject"
   "E:/HK231/HE_THONG_NHUNG/LAB/LAB4/build/bootloader"
   "E:/HK231/HE_THONG_NHUNG/LAB/LAB4/build/bootloader-prefix"
   "E:/HK231/HE_THONG_NHUNG/LAB/LAB4/build/bootloader-prefix/tmp"
